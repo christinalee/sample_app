@@ -6,7 +6,7 @@ describe "Static pages" do
 
   describe "Home page" do
   	
-    before { visit root_path}
+    before { visit root_path }
 
     it { should have_selector('h1',        text: 'Welcome to Schedumator') }
     it { should have_selector('title',     text: full_title('')) }
@@ -15,7 +15,7 @@ describe "Static pages" do
 
 
   describe "Help page" do
-  	before { visit help_path}
+  	before { visit help_path }
 
     it { should have_selector('h1',    text: 'Help') }
     it { should have_selector('title', text: full_title('Help')) }
@@ -23,14 +23,14 @@ describe "Static pages" do
 
 
   describe "About page" do
-  	before { visit about_path}
+  	before { visit about_path }
 
     it { should have_selector('h1',    text: 'About') }
     it { should have_selector('title', text: full_title('About')) }
   end
 
   describe "Contact Page" do
-    before { visit contact_path}
+    before { visit contact_path }
 
     it { should have_selector('h1',    text: 'Contact') }
     it { should have_selector('title', text: full_title('Contact')) }
