@@ -1,0 +1,14 @@
+<% provide(:title, @user.name) %>
+<div class="row">
+	<aside class="span4">
+		<section>
+			<h1>
+				<%= link_to image_tag("stevens_logo.jpg", 
+					alt: "Stevens Institute of Technology",
+					class: "logo"), 
+					'http://stevens.edu' %>
+				<%= @user.name %>
+			</h1>
+		</section>
+	</aside>
+</div>
