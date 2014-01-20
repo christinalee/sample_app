@@ -5,6 +5,7 @@ $stevensRed: #a32638;
 $stevensRed10: #8a0d1f; /* darkened by 10% */
 $stevensRed30: #570000; /* darkened by 30% */
 $grayMediumLight: #eaeaea;
+$backgroundRectColor: #ffffff;
 
 @mixin box_sizing {
 	-moz-box-sizing: border-box;
@@ -207,6 +208,10 @@ input, textarea, select, .uneditable-input {
         stroke-width:2px;   
     }
 
+    .background {
+    	fill: $backgroundRectColor;
+    }
+
     text.mono {
         font-size: 9pt;
         font-family: Consolas, courier;
@@ -220,4 +225,9 @@ input, textarea, select, .uneditable-input {
     text.axis-worktime {
         fill: #000;
     }
+
+}
+
+.course_legend {
+	float: left;
 }
