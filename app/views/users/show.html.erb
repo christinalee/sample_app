@@ -97,11 +97,11 @@
 
 
       
-      var data = data_raw.slice();
+      //var data = data_raw.slice();
       var valueFn = function(d) {return d.value;};
  
       var colorScale = d3.scale.quantile()
-          .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
+          .domain([0, buckets - 1, d3.max(data_raw.slice(), function (d) { return d.value; })])
           .range(colors);
 
       var svg = d3.select("#chart1").append("svg")
@@ -218,6 +218,7 @@
         } else {
           console.log("Error:unexpected minutes value in addPartialEndHour");
         }
+        console.log("minutes " + minutes)
       }
 
       function addFullHours(start, end){
@@ -232,7 +233,6 @@
         }
         console.log(width_fill);
 
-
         var section_grid = svg.append("rect")
           .attr("x", function( ) { return (hour - 6) * gridSize + gridSize * start_fill; })
           .attr("y", function( ) { return (day - 1) * gridSize; })
@@ -246,36 +246,22 @@
         section_grid.append("title").text(title);
       }
 
-      // var heatMap = svg.selectAll(".hour")
-      //     .data(data)
-      //     .enter().append("rect")
-      //     .attr("x", function(d) { return (d.hour - 6) * gridSize; })
-      //     .attr("y", function(d) { return (d.day - 1) * gridSize; })
-      //     .attr("rx", 4)
-      //     .attr("ry", 4)
-      //     .attr("class", function(d) { return d.title + " hour bordered " })
-      //     .attr("width", gridSize)
-      //     .attr("height", gridSize)
-      //     .style("fill", function(d) { return colors[d.value] });
-
-      // heatMap.append("title").text(function(d) { return d.value; });
-
       var legend_svg = d3.select(".course_legend").append("svg")
           .append("g");
 
       var legend = legend_svg.selectAll(".legend")
-        .data(course_legend.slice())
+        .data(data_raw.slice())
         .enter().append("g")
         .attr("class", "legend")
 
       var legendElementWidth = 220 - margin.left - margin.right,
-          legendElementHeight = 2 * gridSize,
+          legendElementHeight = 1.5 * gridSize,
           title_offset = 18,
           header_size = 195,
           legend_title_height = 20,
           legend_outline_width = 2;
 
-      // Append outter rect
+      // Append outer rect
       legend.append("rect")
           .attr("x", margin.left)
           .attr("y", function(d, i) { return legendElementHeight * i + header_size; })
@@ -312,8 +298,8 @@
           (title_offset + header_size); });
 
       legend.selectAll(".legend")
-        .data(data_raw.slice())
-        .enter().append("g")
+        //.data(data_raw.slice())
+        //.enter().append("g")
         .append("text")
         .attr("class", "mono")
         .text(function(d) { return ""; }) //finish this method =-----------------------------------
