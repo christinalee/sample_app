@@ -30,281 +30,369 @@
 	dynamically compile assets in the Rails 3.x asset pipeline-->
 <script src="http://d3js.org/d3.v3.js"></script>
 <script type="text/javascript">
-  var margin = { top: 50, right: 0, bottom: 100, left: 30 },
-      width = 960 - margin.left - margin.right,
-      height = 430 - margin.top - margin.bottom,
-      gridSize = Math.floor(width / 17),
-      x = 17,
-      y = 7,
-      legendElementWidth = gridSize*2,
-      buckets = 9,
-      colors = ["#F04030", "#C0c0c0", "#3060f0", "#902020", "#909090", "#405090", "#5070D0", "#404040"],
-      days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-      times = ["6a", "7a", "8a", "9a", "10a", "11a", "12a", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p"],
-      data_raw = [
-      {"meetings":[{"day":1,"start_hour":18, "end_hour":20.50}], "value":0,"title": "ME 470F", 
-       "course_info": {"name":"Mechanical Eng. Systems Lab", 
-                       "professor": "Prof  Nazalewicz",
-                       "room": "C 101",
-                       "time": "M 6:00-8:50"}
-      },
-      {"meetings":[{"day":2,"start_hour":10, "end_hour":11.15},{"day":4,"start_hour":10, "end_hour":11.15}], "value":1,"title": "ME 491D", 
-       "course_info": {"name":"Manuf. Processes and Systems", 
-                       "professor": "Prof Basu",
-                       "room": "E 222",
-                       "time": "TR 10:00-11:15"}
-      },
-      {"meetings":[{"day":2,"start_hour":12, "end_hour":14.50}], "value":2,"title": "TG 404B", 
-       "course_info": {"name":"Entreprenuership Inter Eng II", 
-                       "professor": "Prof Rohmeyer",
-                       "room": "X 104",
-                       "time": "T 1:00-2:50"}
-      },
-      {"meetings":[{"day":2,"start_hour":15, "end_hour":16.50},{"day":4,"start_hour":15, "end_hour":16.50}], "value":3,"title": "E 424X2", 
-       "course_info": {"name":"Engineering Design VIII", 
-                       "professor": "Prof Pochiraju",
-                       "room": "",
-                       "time": "R 12:00-1:30"}
-      },
-      {"meetings":[{"day":4,"start_hour":12, "end_hour":13.30}], "value":4,"title": "PE 200C3", 
-       "course_info": {"name":"Fitness", 
-                       "professor": "Clayton",
-                       "room": "C 101",
-                       "time": "Monday 6:00-8:45"}
-      },
-      {"meetings":[{"day":4,"start_hour":18.15, "end_hour":20.45}], "value":5,"title": "ME 598A", 
-       "course_info": {"name":"Intro to Robotics", 
-                       "professor": "Prof  Salman",
-                       "room": "BC 221",
-                       "time": "R 6:15-8:45"}
-      },
-       ]
-      course_legend = [{"value":0,"title":"ME 343"},{"value":1,"title":"ME 585"},{"value":2,"title":"ME 222"}];
-      data_raw1 = [
-      {"day":1,"hour":1300,"value":0,"title": "ME 470F", 
-       "course_info": {"name":"Mechanical Eng. Systems Lab", 
-                       "professor": "Prof Basu",
-                       "room": "C 101",
-                       "time": "Monday 6:00-8:45"}},
-      {"day":1,"hour":14,"value":0, "title": "one"},
-      {"day":1,"hour":15,"value":0},
-      {"day":2,"hour":4,"value":1},{"day":2,"hour":7,"value":2},
-      {"day":2,"hour":8,"value":2},{"day":2,"hour":9,"value":3},
-      {"day":2,"hour":10,"value":3},{"day":4,"hour":4,"value":1},
-      {"day":4,"hour":6,"value":4},{"day":4,"hour":9,"value":3},
-      {"day":4,"hour":10,"value":3},{"day":4,"hour":12,"value":5},
-      {"day":4,"hour":13,"value":5}]
 
 
-      
-      //var data = data_raw.slice();
-      var valueFn = function(d) {return d.value;};
- 
-      var colorScale = d3.scale.quantile()
-          .domain([0, buckets - 1, d3.max(data_raw.slice(), function (d) { return d.value; })])
-          .range(colors);
+//temporary hardcoded class schedule
+var data_raw = [
+  {"meetings":[{"day":1,"start_hour":18, "end_hour":20.50}], "value":0,"title": "ME 470F", 
+   "course_info": {"name":"Mechanical Eng. Systems Lab", 
+                   "professor": "Prof  Nazalewicz",
+                   "room": "C 101",
+                   "time": "M 6:00-8:50"}
+  },
+  {"meetings":[{"day":2,"start_hour":10, "end_hour":11.15},{"day":4,"start_hour":10, "end_hour":11.15}], "value":1,"title": "ME 491D", 
+   "course_info": {"name":"Manuf. Processes and Systems", 
+                   "professor": "Prof Basu",
+                   "room": "E 222",
+                   "time": "TR 10:00-11:15"}
+  },
+  {"meetings":[{"day":2,"start_hour":12, "end_hour":14.50}], "value":2,"title": "TG 404B", 
+   "course_info": {"name":"Entreprenuership Inter Eng II", 
+                   "professor": "Prof Rohmeyer",
+                   "room": "X 104",
+                   "time": "T 1:00-2:50"}
+  },
+  {"meetings":[{"day":2,"start_hour":15, "end_hour":16.50},{"day":4,"start_hour":15, "end_hour":16.50}], "value":3,"title": "E 424X2", 
+   "course_info": {"name":"Engineering Design VIII", 
+                   "professor": "Prof Pochiraju",
+                   "room": "",
+                   "time": "R 12:00-1:30"}
+  },
+  {"meetings":[{"day":4,"start_hour":12, "end_hour":13.30}], "value":4,"title": "PE 200C3", 
+   "course_info": {"name":"Fitness", 
+                   "professor": "Clayton",
+                   "room": "C 101",
+                   "time": "Monday 6:00-8:45"}
+  },
+  {"meetings":[{"day":4,"start_hour":18.15, "end_hour":20.45}], "value":5,"title": "ME 598A", 
+   "course_info": {"name":"Intro to Robotics", 
+                   "professor": "Prof  Salman",
+                   "room": "BC 221",
+                   "time": "R 6:15-8:45"}
+  },
+];
 
-      var svg = d3.select("#chart1").append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      var dayLabels = svg.selectAll(".dayLabel")
-          .data(days)
-          .enter().append("text")
-            .text(function (d) { return d; })
-            .attr("x", 0)
-            .attr("y", function (d, i) { return i * gridSize; })
-            .style("text-anchor", "end")
-            .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
-            .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
 
-      var timeLabels = svg.selectAll(".timeLabel")
-          .data(times)
-          .enter().append("text")
-            .text(function(d) { return d; })
-            .attr("x", function(d, i) { return i * gridSize; })
-            .attr("y", 0)
-            .style("text-anchor", "middle")
-            .attr("transform", "translate(" + gridSize / 2 + ", -6)")
-            .attr("class", function(d, i) { return ((i >= 2 && i <= 14) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
-      var background = svg.selectAll(".background_rect")
-          .data(d3.range(x * y))
-          .enter().append("rect")
-          .attr("transform", translate)
-          .attr("rx", 4)
-          .attr("ry", 4)
-          .attr("class", "background bordered")
-          .attr("width", gridSize)
-          .attr("height", gridSize);
-          
-      function translate(d) {
-        return "translate(" + (d % x) * gridSize + "," + Math.floor(d / x) * gridSize + ")";
-      }
 
-      function onHour(time) { //time is written in military time: 2:30pm = 14.30
-        var minutes = time % 1;
-        if (minutes === 0 || minutes === .50) { //treat typical 50 min class as hour
-          return true;
-        }
-        return false;
-      }
 
-      var day = -1,
-          title, value;
 
-      addSections(data_raw);
 
-      function addSections(data_raw) {
-        var section,
-            meetings,
-            start_time,
-            end_time;
-        for (var i = 0; i < data_raw.length; i++) {
-          meeting = data_raw[i].meetings;
-          title = data_raw[i].title;
-          value = data_raw[i].value;
+//Global Variable declarations
+//Primary SVG variables
+var margin = { top: 50, right: 0, bottom: 100, left: 30 },
+    width = 960 - margin.left - margin.right,
+    height = 430 - margin.top - margin.bottom,
+    num_columns = 17,
+    num_rows = 7, 
+    gridSize = Math.floor(width / num_columns),
+    legendElementWidth = gridSize*2,
+    buckets = 9,
+    colors = ["#F04030", "#C0c0c0", "#3060f0", "#902020", "#909090", "#405090", "#5070D0", "#404040"],
+    days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+    times = ["6a", "7a", "8a", "9a", "10a", "11a", "12a", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p"],
+    course_legend = [{"value":0,"title":"ME 343"},{"value":1,"title":"ME 585"},{"value":2,"title":"ME 222"}],
+    primary_svg,
+    alternatives_svg,
+    legend_svg;
 
-          for (var j = 0; j < meeting.length; j++) { 
-            start_time = meeting[j].start_hour;
-            end_time = meeting[j].end_hour;
-            day = meeting[j].day;
+//Legend specific variables
+var legendElementWidth = 220 - margin.left - margin.right,
+    legendElementHeight = 1.5 * gridSize,
+    title_offset = 18,
+    header_size = 195,
+    legend_title_height = 20,
+    legend_outline_width = 2;
 
-            if (onHour(start_time) && onHour(end_time)) { 
-              addFullHours(start_time, end_time)
-            } else if (!(onHour(start_time) || onHour(end_time))) {
-              addPartialStartHour(start_time);
-              addPartialEndHour(end_time);
-              addFullHours(Math.ceil(start_time), Math.floor(end_time));
-            } else { //this case will not happen at Stevens and is included only for thoroughness
-              if(onHour(start_time)){
-                addFullHours(start_time, Math.floor(end_time));
-                addPartialEndHour(end_time);
-              } else {
-                addPartialStartHour(start_time);
-                addFullHours(Math.ceil(start_time), end_time);
-              }
-            }
-          }
-        }
-      }
+//Main method calls      
+displayPrimarySchedule(data_raw);
+displayAlternativeSchedules(data_raw);
+addLegend();
 
-      function addPartialStartHour(hour){
-        var minutes = (hour % 1) * 100;
-        hour = Math.floor(hour);
-        if( 10 <= minutes <= 20) {
-          addBlock(hour, .25, .75);
-        } else if (20 < minutes <= 35){
-          addBlock(hour, .5, .5);
-        } else if ( 35 < minutes < 50){
-          addBlock(hour, .75, .25);
+
+
+//___________________________________________________________//
+// START MAIN METHOD DECLARATIONS
+
+function displayPrimarySchedule(json_data){
+  //TODO: create svg 
+  primary_svg = d3.select("#chart1").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  //TODO: check non-empty and display error message
+  drawSchedule(primary_svg, json_data);
+}
+
+function displayAlternativeSchedules(json_data){
+  //TODO: create svg
+  //alternatives_svg = 
+
+  //TODO: check that there are alternatives, otherwise display error
+  // for(var i = 1; i < json_data.length; i++) {
+  //   drawSchedule(alternatives_svg, json_data[i]);
+  // }
+}
+
+function drawSchedule(schedule_svg, json_data){
+  drawBackground(schedule_svg);
+  addSections(schedule_svg, json_data);
+}
+
+//End main method declarations
+//___________________________________________________________//
+
+
+//___________________________________________________________//
+// START BACKGROUND RELATED METHODS
+function drawBackground(schedule_svg){
+  var dayLabels = schedule_svg.selectAll(".dayLabel")
+    .data(days)
+    .enter().append("text")
+      .text(function (d) { return d; })
+      .attr("x", 0)
+      .attr("y", function (d, i) { return i * gridSize; })
+      .style("text-anchor", "end")
+      .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+      .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+
+  var timeLabels = schedule_svg.selectAll(".timeLabel")
+    .data(times)
+    .enter().append("text")
+      .text(function(d) { return d; })
+      .attr("x", function(d, i) { return i * gridSize; })
+      .attr("y", 0)
+      .style("text-anchor", "middle")
+      .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+      .attr("class", function(d, i) { return ((i >= 2 && i <= 14) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+
+  var background = schedule_svg.selectAll(".background_rect")
+    .data(d3.range(num_columns * num_rows))
+    .enter().append("rect")
+    .attr("transform", translate)
+    .attr("rx", 4)
+    .attr("ry", 4)
+    .attr("class", "background bordered")
+    .attr("width", gridSize)
+    .attr("height", gridSize);
+}
+
+//used first in background methods, but also utilized in other modules
+function translate(d) {
+  return "translate(" + (d % num_columns) * gridSize + "," + Math.floor(d / num_columns) * gridSize + ")";
+}
+
+// End background methods
+//_________________________________________________________//
+
+    
+
+//_________________________________________________________//
+//START SECTION RELATED METHODS 
+    
+//addSections() global variables
+var day = -1,
+    title, 
+    value;
+    
+//Explicitly passing the svg and data so that the method can be used
+//for both the primary and seconday schedules depending on passed 
+//paramters
+function addSections(schedule_svg, data_raw) {
+
+  var section,
+      meetings,
+      start_time,
+      end_time;
+
+  for (var i = 0; i < data_raw.length; i++) {
+    meeting = data_raw[i].meetings;
+    title = data_raw[i].title;
+    value = data_raw[i].value;
+
+    for (var j = 0; j < meeting.length; j++) {
+      start_time = meeting[j].start_hour;
+      end_time = meeting[j].end_hour;
+      day = meeting[j].day;
+
+      if (onHour(start_time) && onHour(end_time)) { 
+        addFullHours(schedule_svg, start_time, end_time)
+      } else if (!(onHour(start_time) || onHour(end_time))) {
+        addPartialStartHour(schedule_svg, start_time);
+        addPartialEndHour(schedule_svg, end_time);
+        addFullHours(schedule_svg, Math.ceil(start_time), Math.floor(end_time));
+      } else { //this case will not happen at Stevens and is included only for thoroughness
+        if(onHour(start_time)){
+          addFullHours(schedule_svg, start_time, Math.floor(end_time));
+          addPartialEndHour(schedule_svg, end_time);
         } else {
-          console.log("Error:unexpected minutes value in addPartialStartHour");
+          addPartialStartHour(schedule_svg, start_time);
+          addFullHours(schedule_svg, Math.ceil(start_time), end_time);
         }
       }
+    }
+  }
+}
 
-      function addPartialEndHour(hour){
-        var minutes = Math.round((hour % 1) * 100);
-        hour = Math.floor(hour);
+function onHour(time) { //time is written in military time: 2:30pm = 14.30
+  var minutes = time % 1;
+  if (minutes === 0 || minutes === .50) { //treat typical 50 min class as hour
+    return true;
+  }
+  return false;
+}
 
-        if( 10 <= minutes && minutes <= 20) {
-          addBlock(hour, 0, .25);
-        } else if (20 < minutes && minutes <= 35){
-          addBlock(hour, 0, .5);
-        } else if ( 35 < minutes && minutes < 50 ){
-          addBlock(hour, 0, .75);
-        } else {
-          console.log("Error:unexpected minutes value in addPartialEndHour");
-        }
-        console.log("minutes " + minutes)
-      }
+function addPartialStartHour(schedule_svg, hour){
+  var minutes = (hour % 1) * 100;
+  hour = Math.floor(hour);
 
-      function addFullHours(start, end){
-        for (var hour = start; hour < end; hour++){
-          addBlock(hour, 0, 1);
-        }
-      }
+  if( 10 <= minutes <= 20) {
+    addBlock(schedule_svg, hour, .25, .75);
+  } else if (20 < minutes <= 35){
+    addBlock(schedule_svg, hour, .5, .5);
+  } else if ( 35 < minutes < 50){
+    addBlock(schedule_svg, hour, .75, .25);
+  } else {
+    console.log("Error:unexpected minutes value in addPartialStartHour");
+  }
+}
 
-      function addBlock(hour, start_fill, width_fill){
-        if (day === -1){
-          console.log("Error: Day was not set before addBlock was called")
-        }
-        console.log(width_fill);
+function addPartialEndHour(schedule_svg, hour){
+  var minutes = Math.round((hour % 1) * 100);
+  hour = Math.floor(hour);
 
-        var section_grid = svg.append("rect")
-          .attr("x", function( ) { return (hour - 6) * gridSize + gridSize * start_fill; })
-          .attr("y", function( ) { return (day - 1) * gridSize; })
-          .attr("rx", 4)
-          .attr("ry", 4)
-          .attr("class", "section_block hour bordered ")
-          .attr("width", gridSize * width_fill)
-          .attr("height", gridSize)
-          .style("fill", function() { return colors[value] });
+  if( 10 <= minutes && minutes <= 20) {
+    addBlock(schedule_svg, hour, 0, .25);
+  } else if (20 < minutes && minutes <= 35){
+    addBlock(schedule_svg, hour, 0, .5);
+  } else if ( 35 < minutes && minutes < 50 ){
+    addBlock(schedule_svg, hour, 0, .75);
+  } else {
+    console.log("Error:unexpected minutes value in addPartialEndHour");
+  }
+}
 
-        section_grid.append("title").text(title);
-      }
+function addFullHours(schedule_svg, start, end){
+  for (var hour = start; hour < end; hour++){
+    addBlock(schedule_svg, hour, 0, 1);
+  }
+}
 
-      var legend_svg = d3.select(".course_legend").append("svg")
-          .append("g");
+function addBlock(schedule_svg, hour, start_fill, width_fill){
+  if (day === -1){
+    console.log("Error: Day was not set before addBlock was called")
+  }
 
-      var legend = legend_svg.selectAll(".legend")
-        .data(data_raw.slice())
-        .enter().append("g")
-        .attr("class", "legend")
+  var section_grid = schedule_svg.append("rect")
+    .attr("x", function( ) { return (hour - 6) * gridSize + gridSize * start_fill; })
+    .attr("y", function( ) { return (day - 1) * gridSize; })
+    .attr("rx", 4)
+    .attr("ry", 4)
+    .attr("class", "section_block hour bordered ")
+    .attr("width", gridSize * width_fill)
+    .attr("height", gridSize)
+    .style("fill", function() { return colors[value] });
 
-      var legendElementWidth = 220 - margin.left - margin.right,
-          legendElementHeight = 1.5 * gridSize,
-          title_offset = 18,
-          header_size = 195,
-          legend_title_height = 20,
-          legend_outline_width = 2;
+  section_grid.append("title").text(title);
+}
 
-      // Append outer rect
-      legend.append("rect")
-          .attr("x", margin.left)
-          .attr("y", function(d, i) { return legendElementHeight * i + header_size; })
-          .attr("rx", 4)
-          .attr("ry", 4)
-          .attr("class", "hour bordered")
-          .attr("width", legendElementWidth)
-          .attr("height", legendElementHeight)
-          .style("fill", function(d, i) { return colors[i]; })
-          .on("mouseover", function() {
-            
-          })
-          .on("mouseout", function(){
+//End Section related functions
+//_______________________________________________________//
 
-          });
 
-      // Append inner rect
-      legend.append("rect")
-      .attr("x", margin.left + legend_outline_width )
-      .attr("y", function(d, i) { return legendElementHeight * i + header_size
-        + legend_title_height; })
-      .attr("rx", 4)
-      .attr("ry", 4)
-      .attr("class", "hour bordered")
-      .attr("width", legendElementWidth - 2 * legend_outline_width )
-      .attr("height", legendElementHeight - legend_title_height - legend_outline_width)
-      .style("fill", "#ffffff");
 
-      legend.append("text")
-        .attr("class", "mono")
-        .text(function(d) { return d.title })
-        .attr("x", margin.left + title_offset)
-        .attr("y", function(d, i) {return (legendElementHeight * i) + 
-          (title_offset + header_size); });
+//_______________________________________________________//
+// START LEGEND RELATED FUNCTIONS
+// TODO: refactor this!! Could be much cleaner. 
+function addLegend(){
+  legend_svg = d3.select(".course_legend").append("svg")
+    .append("g");
+  
+  var legend = legend_svg.selectAll(".legend")
+    .data(data_raw.slice())
+    .enter().append("g")
+    .attr("class", "legend")
+  
+  appendOuterRects(legend);
+  appendInnerRects(legend);
+  addLegendText(legend);
+} //end addLegend()
 
-      legend.selectAll(".legend")
-        //.data(data_raw.slice())
-        //.enter().append("g")
-        .append("text")
-        .attr("class", "mono")
-        .text(function(d) { return ""; }) //finish this method =-----------------------------------
-        .attr("x", margin.left + title_offset)
-        .attr("y", function(d, i) {return (legendElementHeight * i) + 
-          (title_offset + header_size); });
+function appendOuterRects(legend){
+  legend.append("rect")
+    .attr("x", margin.left)
+    .attr("y", function(d, i) { return legendElementHeight * i + header_size; })
+    .attr("rx", 4)
+    .attr("ry", 4)
+    .attr("class", "hour bordered")
+    .attr("width", legendElementWidth)
+    .attr("height", legendElementHeight)
+    .style("fill", function(d, i) { return colors[i]; })
+    .on("mouseover", function() { //TODO: finish this function djGJHAGFIGHAPF
+      d3.select(this).select('text')
+                // .text(function(d){
+                //     return d.full_name;
+                // })
+                .text("Hello");
+    })
+    .on("mouseout", function(){ //TODO: finish this function sgjahiurephgpire
+
+    });
+}
+
+function appendInnerRects(legend){
+  legend.append("rect")
+    .attr("x", margin.left + legend_outline_width )
+    .attr("y", function(d, i) { return legendElementHeight * i + header_size + legend_title_height; })
+    .attr("rx", 4)
+    .attr("ry", 4)
+    .attr("class", "hour bordered")
+    .attr("width", legendElementWidth - 2 * legend_outline_width )
+    .attr("height", legendElementHeight - legend_title_height - legend_outline_width)
+    .style("fill", "#ffffff");
+}
+
+function addLegendText(legend){
+  legend.append("text")
+    .attr("class", "mono")
+    .text(function(d) { return d.title })
+    .on("mouseover", function() { //TODO: finish this function djGJHAGFIGHAPF
+      d3.select(this).text(function(d){
+                    return "Hello";
+      })
+    })
+    .on("mouseout", function(){ //TODO: finish this function sgjahiurephgpire
+      d3.select(this).text(function(d) { 
+        return d.title; 
+      })
+    })
+    .attr("x", margin.left + title_offset)
+    .attr("y", function(d, i) {return (legendElementHeight * i) + 
+      (title_offset + header_size); });
+
+  // legend.selectAll(".legend")
+  //   //.data(data_raw.slice())
+  //   //.enter().append("g")
+  //   .append("text")
+  //   .attr("class", "mono")
+  //   .text(function(d) { 
+  //     return "goodbye"; 
+  //   }) //TODO: finish this method djharpiugbnirpghjrbanoprioguhreinvaprhgijar
+  //   .on("mouseover", function() { //TODO: finish this function djGJHAGFIGHAPF
+  //     d3.select(this).select('text')
+  //               .text(function(d){
+  //                   return "Hello";
+  //               })
+  //   })
+  //   .attr("x", margin.left + title_offset)
+  //   .attr("y", function(d, i) {return (legendElementHeight * i) + 
+  //     (title_offset + header_size); });
+
+}
+//END Legend related methods
+//___________________________________________________________
 
 </script>
